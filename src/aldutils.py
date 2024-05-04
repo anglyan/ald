@@ -8,7 +8,7 @@ def calc_vth(M,T):
 
 
 def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
-    """Average area of a surface site
+    """Average area of a surface site from growth per cycle
 
     Calculate the average area of a surface site
 
@@ -35,8 +35,9 @@ def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
     molcm2 = masscm2/M*6.022e23
     return 1e-4/(nmol*molcm2)
 
+
 def calc_sitearea_fromqcm(M, mpc, nmol=1):
-    """Average area of a surface site
+    """Average area of a surface site from QCM mass
 
     Calculate the average area of a surface site from qcm data
 
@@ -58,6 +59,29 @@ def calc_sitearea_fromqcm(M, mpc, nmol=1):
     """
 
     return M/(mpc*1e-5*6.022e23*nmol)
+
+def calc_sitearea_fromrbs(atoms_area, atoms_permol=1.0):
+    """Average area of a surface site from RBS data
+
+    Calculate the average area of a surface site from RBS data
+
+    Parameters
+    ----------
+
+    atoms_area : float
+        Atoms per unit area for one ALD cycle (atoms per sq. meter)
+    atoms_permol : int, optional (default 1)
+        Number of atoms per precursor molecule
+
+    Returns
+    -------
+    float
+        Average area of a surface site in sq. meters
+
+    """
+
+    return atoms_permol/atoms_area
+
 
 
 class ALDchem:
