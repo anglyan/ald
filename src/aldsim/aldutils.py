@@ -1,10 +1,20 @@
-import numpy as np
+import math as m
 
 kb = 1.38e-23
 amu = 1.660e-27
 
-def calc_vth(M,T):
-    return np.sqrt(8*kb*T/(np.pi*amu*M))
+def calc_vth(M, T):
+    """Compute the mean thermal velocity
+    
+    Parameters
+    ----------
+
+    M : float
+        Molecular mass in atomic mass units
+    T : Temperature in K
+    
+    """
+    return m.sqrt(8*kb*T/(m.pi*amu*M))
 
 
 def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
