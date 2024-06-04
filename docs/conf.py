@@ -12,15 +12,16 @@ import os
 sys.path.insert(0, os.path.abspath('../src'))  # Source code dir relative to this file
 
 project = 'aldsim'
-copyright = '2024, Angel Yanguas-Gil'
+copyright = '2024, UChicago LLC'
 author = 'Angel Yanguas-Gil'
-release = '0.0.1'
+release = '0.0.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.autosummary']
+              'sphinx.ext.autosummary',
+              'sphinx.ext.viewcode']
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 

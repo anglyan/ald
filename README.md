@@ -33,12 +33,9 @@ pip install aldsim
 
 ## Usage
 
-
 ## Acknowledgements
 
-* Threadwork, U.S. Department of Energy Office of Science, 
-  Microelectronics Program.
-
+Argonne's Laboratory Directed Research and Development program
 
 ## Copyright and license
 
