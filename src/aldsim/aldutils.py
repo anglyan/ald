@@ -1,7 +1,7 @@
 import math as m
 
-kb = 1.38e-23
-amu = 1.660e-27
+from .constants import amu, kb, Nav
+
 
 def calc_vth(M, T):
     """Compute the mean thermal velocity
@@ -12,12 +12,12 @@ def calc_vth(M, T):
     M : float
         Molecular mass in atomic mass units
     T : Temperature in K
-    
+
     """
     return m.sqrt(8*kb*T/(m.pi*amu*M))
 
 
-def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
+def calc_sitearea_fromgpc(gpc, M, density, nmol=1):
     """Average area of a surface site from growth per cycle
 
     Calculate the average area of a surface site
@@ -25,12 +25,12 @@ def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
     Parameters
     ----------
 
-    M : float
-        Molecular mass in atomic mass units
-    density : float
-        Density of the film, in g/cm3
     gpc : float
         Growth per cycle, in Angstroms
+    M : float
+        Molecular mass from the solid in atomic mass units
+    density : float
+        Density of the film, in g/cm3
     nmol : int, optional (default 1)
         Number of precursor molecules per unit formula of the solid
 
@@ -46,7 +46,7 @@ def calc_sitearea_fromgpc(M, density, gpc, nmol=1):
     return 1e-4/(nmol*molcm2)
 
 
-def calc_sitearea_fromqcm(M, mpc, nmol=1):
+def calc_sitearea_fromqcm(mpc, M, nmol=1):
     """Average area of a surface site from QCM mass
 
     Calculate the average area of a surface site from qcm data
@@ -54,10 +54,10 @@ def calc_sitearea_fromqcm(M, mpc, nmol=1):
     Parameters
     ----------
 
-    M : float
-        Molecular mass in atomic mass units
     mpc : float
         Mass per cycle in  ng/cm2
+    M : float
+        Molecular mass in atomic mass units
     nmol : int, optional (default 1)
         Number of precursor molecules per unit formula of the solid
 
