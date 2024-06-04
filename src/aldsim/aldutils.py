@@ -1,3 +1,5 @@
+#Copyright © 2024, UChicago Argonne, LLC
+
 import math as m
 
 from .constants import amu, kb, Nav
@@ -92,83 +94,5 @@ def calc_sitearea_fromrbs(atoms_area, atoms_permol=1.0):
 
     return atoms_permol/atoms_area
 
-
-
-class ALDchem:
-
-    """
-    Ideal self-limited process
-
-    Codifies all the parameters required to work with self-limited processes
-
-    All parameters are in SI units.
-
-
-    """
-
-    def __init__(self, p, M, beta0, s0, T):
-        self._p = p
-        self._M = M
-        self._beta0 = beta0
-        self._s0 = s0
-        self._T = T
-        self._update()
-
-
-    def _update(self):
-        self.vth = calc_vth(self.M, self.T)
-        self.alpha = 0.25*self.vth*self.beta0
-        self.n0 = self.p/(kb*self.T)
-        self.nu0 = self.alpha*self.s0*self.n0
-
-  
-    @property
-    def s0(self):
-        return self._s0
-
-    @s0.setter
-    def s0(self, s0):
-        self._s0 = s0
-        self._update()
-
-    @property
-    def M(self):
-        return self._M
-
-    @M.setter
-    def M(self, M):
-        self._M = M
-        self._update()
-
-    @property
-    def beta0(self):
-        return self._beta0
-
-    @beta0.setter
-    def beta0(self, beta0):
-        self._beta0 = beta0
-        self._update()
-    
-    @property
-    def T(self):
-        return self._T
-
-    @T.setter
-    def T(self, T):
-        self._T = T
-        self._update()
-
-    @property
-    def p(self):
-        return self._p
-
-    @p.setter
-    def p(self, p):
-        self._p = p
-        self._update()
-
-    def from_qcm(self, mpc, nmol=1):
-        self.mpc = mpc
-        self.s0 = calc_sitearea_fromqcm(self.M, mpc, nmol)
 
 

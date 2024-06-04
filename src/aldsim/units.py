@@ -1,4 +1,6 @@
+#Copyright © 2024, UChicago Argonne, LLC
 """Utility functions to transform physical quantities to the right units"""
+
 from .constants import Nav
 
 class Conversion:
