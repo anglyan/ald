@@ -79,9 +79,9 @@ class PlugFlowMixed:
         Da = self.Da
         y = 1/Da*np.log(1+(np.exp(Da)-1)*np.exp(-Da*t))
         c = 1-y
-        x = 1/(Da*y)*(1-np.exp(-Da*y))
+        x = np.exp(-Da*y)
         return t, c, x
-                      
+
 
 
 class PlugFlowMixedSoft:
