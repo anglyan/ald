@@ -86,19 +86,58 @@ class SoftSaturating(SurfaceKinetics):
         return self.f1*self.beta1*av1 + self.f2*self.beta2*av2
 
 
-
-
-
 class ALDChem:
 
-    def __init__(self, prec, kinetics, dm=None):
+    def __init__(self, prec, kinetics, dm=None, T=None):
         self.prec = prec
         self.kinetics = kinetics
+        if T is None:
+            self._T = None
+        else:
+            self.T = T
         if dm is None:
             self.default_dm = True
             self.dm = 1
         else:
             self.dm = dm
+
+    @property
+    def site_area(self):
+        return self.kinetics.site_area
+    
+    @site_area.setter
+    def site_area(self, value):
+        self.kinetics.site_area = value
+    
+    @property
+    def mass(self):
+        return self.prec.mass
+    
+    @property
+    def T(self):
+        return self._T
+    
+    @T.setter
+    def T(self, value):
+        self._vth = self.prec.vth(value)
+        self._T = value
+
+    @property
+    def vth(self):
+        return self._vth
+    
+
+class ALDProcess:
+
+    def __init__(self, chem1, chem2, n1, n2, T=None):
+
+        self.chem1 = chem1
+        self.n1 = n1
+        self.n2 = n2
+        self.chem2 = chem2
+        self.T = T
+    
+
 
     
 
