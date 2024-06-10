@@ -22,25 +22,6 @@ def test_aldideal():
     ald = ALDideal(p, 1e19, 0.001)
 
 
-@pytest.mark.skip
-class TestALDChem:
-
-    def test_setT(self):
-        k = ALDKinetics(1e19, 1e-2)
-        c = Precursor(name='TMA', mass=101.5)
-        ac = ALDChem(c, k)
-        ac.T = 300
-        assert ac.T == 300
-
-    def test_sitearea(self):
-        k = ALDKinetics(1e19, 1e-2)
-        c = Precursor(name='TMA', mass=101.5)
-        ac = ALDChem(c, k)
-        assert ac.site_area == pytest.approx(1e-19)
-        ac.site_area = 1e-18
-        assert ac.kinetics.site_area == pytest.approx(1e-18)
-        
-
 class TestSoftSaturating:
 
     def test_nsites_s0(self):
