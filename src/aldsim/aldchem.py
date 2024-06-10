@@ -1,6 +1,10 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 from .aldutils import calc_vth
+from .constants import kb
+from .dose.ideal import ZeroD
+
+import numpy as np
 
 class Precursor:
     """
@@ -19,7 +23,8 @@ class Precursor:
 
 class SurfaceKinetics:
 
-    def __init__(self, nsites, f=1):
+    def __init__(self, prec, nsites, f=1):
+        self.prec = prec
         self.f = f
         self.nsites = nsites
 
@@ -46,7 +51,37 @@ class SurfaceKinetics:
 
     def beta_av(self, *args):
         pass
+
+    def vth(self, T):
+        return self.prec.vth(T)
+
         
+
+class ALDideal(SurfaceKinetics):
+    """Ideal first-order irreversible Langmuir kinetics"""
+
+    name = 'ideal'
+
+    def __init__(self, prec, nsites, beta0, f=1, dm=1):
+        self.beta0 = beta0
+        self.dm = dm
+        super().__init__(prec, nsites, f)
+
+    def beta(self, cov=0):
+        return self.f*self.beta0*(1-cov)
+
+    def beta_av(self, av):
+        return self.f*self.beta0*av
+    
+    def model(self, model_name, **kwargs):
+        if model_name.lower() == 'zerod':
+            return ZeroD(self.prec, self.nsites, self.beta0, self.f, **kwargs)
+        
+
+
+
+
+
 
 class ALDKinetics(SurfaceKinetics):
     """Ideal first-order irreversible Langmuir kinetics"""
@@ -57,7 +92,7 @@ class ALDKinetics(SurfaceKinetics):
         self.beta0 = beta0
         super().__init__(nsites, f)
 
-    def beta(self, cov):
+    def beta(self, cov=0):
         return self.f*self.beta0*(1-cov)
 
     def beta_av(self, av):
@@ -79,7 +114,7 @@ class SoftSaturating(SurfaceKinetics):
             self.f2 = f2
         super().__init__(nsites, self.f1+self.f2)
 
-    def beta(self, cov1, cov2):
+    def beta(self, cov1=0, cov2=0):
         return self.f1*self.beta1*(1-cov1) + self.f2*self.beta2*(1-cov2)
 
     def beta_av(self, av1, av2):
@@ -126,6 +161,17 @@ class ALDChem:
     def vth(self):
         return self._vth
     
+    def t0(self, p):
+        beta0 = self.kinetics.beta()
+        return self.site_area*0.25*self.vth*p/(kb*self.T)*beta0
+    
+    def saturation_curve(self, p, tmax=None, dt=None):
+        if tmax is None:
+            t0 = self.t0(p)
+            tmax = 5*t0
+
+
+    
 
 class ALDProcess:
 
@@ -136,6 +182,18 @@ class ALDProcess:
         self.n2 = n2
         self.chem2 = chem2
         self.T = T
+
+    @property
+    def T(self):
+        return self._T
+    
+    @T.setter
+    def T(self, value):
+        self._T = value
+        self.chem1.T = value
+        self.chem2.T = value
+
+    
     
 
 
