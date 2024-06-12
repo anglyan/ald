@@ -87,6 +87,43 @@ class WellStirred(IdealDoseModel):
         self.base_model.Da = self.Da()
         t, cov = self.base_model.saturation_curve()
         return t*self.t0(), cov
+    
+    def run(self):
+        self.base_model.Da = self.Da()
+        t, cov, x = self.base_model.run()
+        return t*self.t0(), cov, x
+
+
+
+class ParticlePlugFlow(IdealDoseModel):
+
+    def __init__(self, chem, p, p0, T, S, flow):
+        super().__init__(chem, p, T)
+        self.S = S
+        self.p0 = p0
+        self.flow0 = flow
+        da = self.Da()
+        self.base_model = PlugFlowMixedND(da)
+
+    def flow(self):
+        return (1e-6*self.flow0/60)*1e5/self.p0*(self.T/300)
+
+    def Da(self):
+        flow = self.flow()
+        return 0.25*self.S/flow*self.chem.beta()*self.vth
+
+    def t0(self):
+        return kb*self.T*self.S/(self.flow()*self.site_area*self.p)
+
+    def saturation_curve(self):
+        self.base_model.Da = self.Da()
+        t, cov = self.base_model.saturation_curve()
+        return t*self.t0(), cov
+
+    def run(self):
+        self.base_model.Da = self.Da()
+        t, cov, x = self.base_model.run()
+        return t*self.t0(), cov, x
 
 
 class PlugFlowMixedND:
