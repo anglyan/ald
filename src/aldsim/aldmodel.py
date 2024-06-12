@@ -1,10 +1,11 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 from .aldchem import ALDideal
-from .dose.ideal import ZeroD
+from .dose.ideal import ZeroD, WellStirred
 
 _ideal_models = {
-    'zeroD' : ZeroD
+    'zeroD' : ZeroD,
+    'wellstirred' : WellStirred,
 }
 
 def aldmodel(process, model_name, **kwargs):

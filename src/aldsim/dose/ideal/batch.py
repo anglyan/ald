@@ -5,7 +5,10 @@
 import numpy as np
 from scipy.integrate import solve_ivp
 
-class WellStirred:
+from .base import IdealDoseModel
+from aldsim.constants import kb
+
+class WellStirredND:
 
     def __init__(self, Da):
         self.Da = Da
@@ -34,10 +37,11 @@ class WellStirred:
         return 1 + 1/(Da*(1-theta))
 
     def _f(self, t, y):
-        return -self.Da*y/(1+self.Da*y)
+        return -y/(1/self.Da+y)
 
     def run(self, tmax=5, dt=0.01):
-        out = solve_ivp(self._f, [0,tmax], [1], t_eval=np.arange(0,tmax,dt))
+        out = solve_ivp(self._f, [0,tmax], [1], method='LSODA',
+                t_eval=np.arange(0,tmax,dt))
         cov = 1-out.y[0,:]
         x = 1/(1+self.Da*out.y[0,:])
         return out.t, cov, x
@@ -59,7 +63,33 @@ class WellStirred:
         return tau, 1/(1+Da*(1-theta))
 
 
-class PlugFlowMixed:
+class WellStirred(IdealDoseModel):
+
+    def __init__(self, chem, p, p0, T, S, flow):
+        super().__init__(chem, p, T)
+        self.S = S
+        self.p0 = p0
+        self.flow0 = flow
+        da = self.Da()
+        self.base_model = WellStirredND(da)
+
+    def flow(self):
+        return (1e-6*self.flow0/60)*1e5/self.p0*(self.T/300)
+
+    def Da(self):
+        flow = self.flow()
+        return 0.25*self.S/flow*self.chem.beta()*self.vth
+
+    def t0(self):
+        return kb*self.T*self.S/(self.flow()*self.site_area*self.p)
+
+    def saturation_curve(self):
+        self.base_model.Da = self.Da()
+        t, cov = self.base_model.saturation_curve()
+        return t*self.t0(), cov
+
+
+class PlugFlowMixedND:
 
     def __init__(self, Da):
         self.Da = Da
@@ -83,34 +113,3 @@ class PlugFlowMixed:
         return t, c, x
 
 
-
-class PlugFlowMixedSoft:
-
-    def __init__(self, D1, D2, f1, f2):
-        self.D1 = D1
-        self.D2 = D2
-        self.f1 = f1
-        self.f2 = f2
-        self.a = D2/D1
-
-    def _f(self, t, y):
-        """Provides the gradient for the fraction of available sites
-        of the first reaction pathway"""
-
-        dec = self.f1*self.D1*y+self.f2*self.D2*np.float_power(y, self.a)
-        return - self.D1*y*(1-np.exp(-dec))/dec
-
-    def saturation_curve(self, tmax=5):
-
-        out = solve_ivp(self._f, [0,tmax], [1], t_eval=np.arange(0,tmax,0.01))
-        y1 = out.y[0,:]
-        y2 = np.float_power(y1, self.a)
-        cov = self.f1*(1-y1) + self.f2*(1-y2)
-        return out.t, cov
-
-    def run(self, tmax, dt):
-        raise NotImplementedError
-    
-    def calc_coverage(self, t):
-        raise NotImplementedError
-    
