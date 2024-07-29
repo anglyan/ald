@@ -1,6 +1,6 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
-"""Batch models"""
+"""Batch particle coating ALD models"""
 
 import numpy as np
 from scipy.integrate import solve_ivp

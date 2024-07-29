@@ -2,7 +2,7 @@
 
 from .aldutils import calc_vth
 from .constants import kb
-from .core.ideal import ZeroD
+from .models.dose import ZeroD
 
 import numpy as np
 
