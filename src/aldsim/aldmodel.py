@@ -1,7 +1,7 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 from .aldchem import ALDideal
-from .dose.ideal import ZeroD, WellStirred, ParticlePlugFlow
+from .core.ideal import ZeroD, WellStirred, ParticlePlugFlow
 
 _ideal_models = {
     'zeroD' : ZeroD,
