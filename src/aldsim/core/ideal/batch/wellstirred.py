@@ -125,3 +125,7 @@ def saturation_curve_double(Da1, Da2, f1, f2, theta_max=0.99999):
     tau = -np.log(x1)/Da1 + f1*theta1 + f2*(1-np.power(x1, alpha))
     return tau, f1*theta1+f2*theta2
 
+
+def saturation_curve(Da, tmax=5, dt= 0.01):
+    m = WellStirred(Da)
+    return m.saturation_curve(tmax, dt)
