@@ -1,11 +1,13 @@
+#Copyright © 2024, UChicago Argonne, LLC
+
 import numpy as np
 
 class PlugFlowMixed:
     """Model for batch particle coating under plug flow approximations.
 
-    Implement a model for particle coating by atomic layer deposition
-    under a well mixed approximation for particle mixing and
-    plug flow approximation for precursor transport.
+    Implementation of a non-dimensional model for particle coating
+    by atomic layer deposition under a well mixed approximation for
+    particle mixing and plug flow approximation for precursor transport.
 
     The model assumes a first-order irreversible Langmuir kinetics
     with the sticking probability value contained in the Damkohler
