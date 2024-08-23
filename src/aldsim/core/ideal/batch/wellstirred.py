@@ -1,7 +1,7 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 import numpy as np
-from scipy.integrate import solve_ivp
+from aldsim.core.solvers import ode_solver, boundedNewton_solver
 
 class WellStirred:
     """Model for batch particle coating under well stirred approximations.
@@ -64,8 +64,7 @@ class WellStirred:
             A tuple of time, surface coverage, precursor utilization arrays
         
         """
-        out = solve_ivp(self._f, [0,tmax], [1], method='LSODA',
-                t_eval=np.arange(0,tmax,dt))
+        out = ode_solver(self._f, [1], tmax, t_eval=np.arange(0,tmax,dt))
         cov = 1-out.y[0,:]
         x = 1/(1+self.Da*out.y[0,:])
         return out.t, cov, x
@@ -101,20 +100,12 @@ class WellStirred:
 
 
 def calc_coverage(Da, tau):
-    ep = 1
-    t = 0.5
-    damp = 0.1
-    while ep > 1e-6:
-        f_t = t - np.log(1-t)/Da - tau
-        fp_t = 1 + 1/(Da*(1-t))
-        damp = 0.1
-        tn = 1.1
-        while tn > 1 or tn < 0:
-            damp = 0.5*damp
-            tn = t - damp*f_t/fp_t
-        ep = abs(t-tn)/t
-        t = tn
+
+    f = lambda t: t - np.log(1-t)/Da - tau
+    fdot = lambda t: 1 + 1/(Da*(1-t))
+    t = boundedNewton_solver(f, fdot)
     return t
+
 
 def saturation_curve_double(Da1, Da2, f1, f2, theta_max=0.99999):
     alpha = Da2/Da1
