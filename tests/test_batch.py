@@ -1,4 +1,4 @@
-from aldsim.models import WellStirred, PlugFlowMixed
+from aldsim.core.ideal.batch import MixedFlow, PlugFlowMixed
 
 class TestPlugFlowMixed:
 
@@ -13,15 +13,15 @@ class TestPlugFlowMixed:
         assert x.shape == y.shape
 
 
-class TestWellStirred:
+class TestMixedFlow:
 
     def test_saturationcurve(self):
-        wsm = WellStirred(10)
+        wsm = MixedFlow(10)
         x, y = wsm.saturation_curve()
         assert x.shape == y.shape
 
     def test_run(self):
-        pfm = WellStirred(10)
+        pfm = MixedFlow(10)
         x,y,z = pfm.run()
         assert x.shape == y.shape
 

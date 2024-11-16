@@ -3,7 +3,7 @@
 import numpy as np
 from aldsim.core.solvers import ode_solver, boundedNewton_solver
 
-class WellStirred:
+class MixedFlow:
     """Model for batch particle coating under well stirred approximations.
 
     Implementation of a non-dimensional model for particle coating
@@ -118,5 +118,5 @@ def saturation_curve_double(Da1, Da2, f1, f2, theta_max=0.99999):
 
 
 def saturation_curve(Da, tmax=5, dt= 0.01):
-    m = WellStirred(Da)
+    m = MixedFlow(Da)
     return m.saturation_curve(tmax, dt)
