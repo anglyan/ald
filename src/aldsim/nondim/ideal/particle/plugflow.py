@@ -2,7 +2,7 @@
 
 import numpy as np
 
-class PlugFlowMixed:
+class MixedPlugFlow:
     """Model for batch particle coating under plug flow approximations.
 
     Implementation of a non-dimensional model for particle coating

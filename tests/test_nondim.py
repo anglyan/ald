@@ -1,14 +1,14 @@
-from aldsim.nondim.ideal.batch import MixedFlow, PlugFlowMixed
+from aldsim.nondim.ideal.particle import MixedFlow, MixedPlugFlow
 
 class TestPlugFlowMixed:
 
     def test_saturationcurve(self):
-        pfm = PlugFlowMixed(10)
+        pfm = MixedPlugFlow(10)
         x, y = pfm.saturation_curve()
         assert x.shape == y.shape
 
     def test_run(self):
-        pfm = PlugFlowMixed(10)
+        pfm = MixedPlugFlow(10)
         x,y,z = pfm.run()
         assert x.shape == y.shape
 

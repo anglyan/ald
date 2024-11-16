@@ -1,8 +1,8 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
-from ..batch import MixedFlow
+from .mixedflow import MixedFlow
 
-class MixedFlowSpatial(MixedFlow):
+class SpatialMixedFlow(MixedFlow):
     """Model for continuous particle coating under well stirred approximations.
 
     Implementation of a non-dimensional model for particle coating
@@ -28,6 +28,6 @@ class MixedFlowSpatial(MixedFlow):
     """
 
 def saturation_curve(Da, tmax=5, dt= 0.01):
-    m = MixedFlowSpatial(Da)
+    m = SpatialMixedFlow(Da)
     return m.saturation_curve(tmax, dt)
 

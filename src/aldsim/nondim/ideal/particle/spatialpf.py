@@ -2,7 +2,7 @@
 
 import numpy as np
 
-class PlugFlowSpatial:
+class SpatialPlugFlow:
     """Model for continuous particle coating under the plug flow approximation.
 
     Implementation of a non-dimensional model for particle coating
@@ -100,6 +100,6 @@ def calc_precursor(Da, t):
 
 
 def saturation_curve(Da, tmax=5, dt= 0.01):
-    m = PlugFlowSpatial(Da)
+    m = SpatialPlugFlow(Da)
     return m.saturation_curve(tmax, dt)
 
