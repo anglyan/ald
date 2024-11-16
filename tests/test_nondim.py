@@ -1,4 +1,4 @@
-from aldsim.core.ideal.batch import MixedFlow, PlugFlowMixed
+from aldsim.nondim.ideal.batch import MixedFlow, PlugFlowMixed
 
 class TestPlugFlowMixed:
 

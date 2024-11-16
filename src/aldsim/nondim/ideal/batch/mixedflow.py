@@ -1,7 +1,7 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 import numpy as np
-from aldsim.core.solvers import ode_solver, boundedNewton_solver
+from aldsim.solvers import ode_solver, boundedNewton_solver
 
 class MixedFlow:
     """Model for batch particle coating under well stirred approximations.
