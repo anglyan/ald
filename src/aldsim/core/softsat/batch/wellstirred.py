@@ -1,5 +1,7 @@
+#Copyright © 2024, UChicago Argonne, LLC
+
 import numpy as np
-from aldsim.core.solvers import ode_solver
+from aldsim.solvers import ode_solver
 
 class WellStirred:
     """Implement """

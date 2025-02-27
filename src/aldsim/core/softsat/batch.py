@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 class PlugFlowMixedNonD:
+    """Implement """
 
     def __init__(self, D1, D2, f1, f2):
         self.D1 = D1

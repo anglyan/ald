@@ -1,1 +1,0 @@
-"""Implements non-dimensional core models for an ideal self-limited process"""
