@@ -1,14 +1,13 @@
 #Copyright © 2024, UChicago Argonne, LLC
 
 from .aldutils import calc_vth
-from .constants import kb
-from .models.dose import ZeroD
+from .constants import kb, Rgas, Nav
 
 import numpy as np
 
 class Precursor:
     """
-    Implement a precursor molecule
+    Defines a precursor molecule
     """
 
     def __init__(self, name='None', mass=100, ligands=None):
@@ -19,17 +18,33 @@ class Precursor:
     def vth(self, T):
         """Calculate the mean thermal velocity at temperature T (in K)"""
         return calc_vth(self.mass, T)
+    
+    def Jwall(self, T, p, in_mols=False):
+        """Calculate the flux per unit area for a given temperature (in K) and pressure (in Pa)"""
+        if in_mols:
+            return 0.25*self.vth(T)*p/(Rgas*T)
+        else:
+            return 0.25*self.vth(T)*p/(kb*T)
+
 
 
 class SurfaceKinetics:
+    """
+    Base class for self-limited kinetics
+
+    It assumes that a fraction of the surface is reactive and comprised of reaction
+    sites of equal surface area. The default is that all the surface is reactive.
+
+    """
 
     def __init__(self, prec, nsites, f=1):
         self.prec = prec
-        self.f = f
+        self._f = f
         self.nsites = nsites
 
     @property
     def site_area(self):
+        """Area of a single reaction site"""
         return self._s0
     
     @site_area.setter
@@ -39,12 +54,28 @@ class SurfaceKinetics:
     
     @property
     def nsites(self):
+        """Number of reactive sites per surface area"""
         return self._nsites
-    
+
     @nsites.setter
     def nsites(self, value):
         self._nsites = value
-        self._s0 = self.f/self._nsites
+        self._s0 = self._f/self._nsites
+
+    @property
+    def nsites_mol(self):
+        """Number of reactive sites per surface area in mols"""
+        return self.nsites/Nav
+    
+    @property
+    def f(self):
+        """Fraction of reactive sites"""
+        self._f 
+
+    @f.setter
+    def f(self, value):
+        self._f = value
+        self._nsites = self._f/self._s0
 
     def beta(self, *args):
         pass
@@ -54,6 +85,9 @@ class SurfaceKinetics:
 
     def vth(self, T):
         return self.prec.vth(T)
+    
+    def Jwall(self, T, p):
+        return self.prec.Jwall(T, p)
 
         
 
@@ -73,13 +107,28 @@ class ALDideal(SurfaceKinetics):
     def beta_av(self, av):
         return self.f*self.beta0*av
     
-    def model(self, model_name, **kwargs):
-        if model_name.lower() == 'zerod':
-            return ZeroD(self.prec, self.nsites, self.beta0, self.f, **kwargs)
-        
+    def t0(self, T, p):
+        """Characteristic time for saturation"""
+        return 1.0/(self.site_area*self.Jwall(T, p)*self.beta0)
+    
+    def saturation_curve(self, T, p):
+        """Return the saturation curve as a (time, coverage) tuple """
+        t0 = self.t0(T,p)
+        tscale = 5*t0
+        logtscale = np.log10(tscale)
+        scale = int(logtscale)
+        if logtscale < 0:
+            scale -= 1
+        factor = int(10**(logtscale-scale))+1
+        tmax= factor*10**scale
+        print(t0, tmax)
+        dt = tmax/100
+        x = np.arange(0, tmax, dt)
+        y = 1-np.exp(-x/t0)
+        return x, y
 
 
-class SoftSaturating(SurfaceKinetics):
+class ALDsoft(SurfaceKinetics):
     """First-order irreversible Langmuir kinetics with two reaction pathways"""
 
     name = 'softsat'
@@ -99,6 +148,30 @@ class SoftSaturating(SurfaceKinetics):
 
     def beta_av(self, av1, av2):
         return self.f1*self.beta1*av1 + self.f2*self.beta2*av2
+
+    def t0(self, T, p):
+        """Characteristic time for saturation"""
+        t1 = 1.0/(self.site_area*self.Jwall(T, p)*self.beta1)
+        t2 = 1.0/(self.site_area*self.Jwall(T, p)*self.beta2)
+        return t1, t2
+    
+    def saturation_curve(self, T, p):
+        """Return the saturation curve as a (time, coverage) tuple """
+        t1, t2 = self.t0(T,p)
+        t0 = max(t1, t2)
+        tscale = 5*t0
+        logtscale = np.log10(tscale)
+        scale = int(logtscale)
+        if logtscale < 0:
+            scale -= 1
+        factor = int(10**(logtscale-scale))+1
+        tmax= factor*10**scale
+        print(t0, tmax)
+        dt = tmax/100
+        x = np.arange(0, tmax, dt)
+        y = (self.f1*(1-np.exp(-x/t1)) + self.f2*(1-np.exp(-x/t2)))/(self.f1+self.f2)
+        return x, y
+
 
 
 class ALDProcess:
