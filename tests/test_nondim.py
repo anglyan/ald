@@ -1,27 +1,27 @@
-from aldsim.nondim.ideal.particle import MixedFlow, MixedPlugFlow
+from aldsim.core.ideal.particle.continuous import PlugFlowSpatial, WellMixedSpatial
 
-class TestPlugFlowMixed:
+class TestPlugFlowSpatial:
 
     def test_saturationcurve(self):
-        pfm = MixedPlugFlow(10)
+        pfm = PlugFlowSpatial(10)
         x, y = pfm.saturation_curve()
         assert x.shape == y.shape
 
     def test_run(self):
-        pfm = MixedPlugFlow(10)
+        pfm = PlugFlowSpatial(10)
         x,y,z = pfm.run()
         assert x.shape == y.shape
 
 
-class TestMixedFlow:
+class TestWellMixedSpatial:
 
     def test_saturationcurve(self):
-        wsm = MixedFlow(10)
+        wsm = WellMixedSpatial(10)
         x, y = wsm.saturation_curve()
         assert x.shape == y.shape
 
     def test_run(self):
-        pfm = MixedFlow(10)
+        pfm = WellMixedSpatial(10)
         x,y,z = pfm.run()
         assert x.shape == y.shape
 
