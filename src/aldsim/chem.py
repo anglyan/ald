@@ -1,18 +1,26 @@
-#Copyright © 2024, UChicago Argonne, LLC
+#Copyright © 2024-2025, UChicago Argonne, LLC
 
 from .aldutils import calc_vth
 from .constants import kb, Rgas, Nav
 
 import numpy as np
 
+_precursor_mass = {
+    'TMA' : 144.17,
+    'H2O' : 18.01
+}
+
 class Precursor:
     """
     Defines a precursor molecule
     """
 
-    def __init__(self, name='None', mass=100, ligands=None):
+    def __init__(self, name='None', mass=None, ligands=None):
         self.name = name
-        self.mass = mass
+        if mass is None:
+            self.mass = _precursor_mass[self.name]
+        else:
+            self.mass = mass
         self.ligands = ligands
 
     def vth(self, T):
@@ -25,7 +33,6 @@ class Precursor:
             return 0.25*self.vth(T)*p/(Rgas*T)
         else:
             return 0.25*self.vth(T)*p/(kb*T)
-
 
 
 class SurfaceKinetics:
