@@ -1,4 +1,5 @@
-#Copyright © 2024, UChicago Argonne, LLC
+#Copyright © 2024-2025, UChicago Argonne, LLC
+
 """Utility functions to transform physical quantities to the right units"""
 
 from .constants import Nav

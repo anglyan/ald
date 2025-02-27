@@ -1,3 +1,5 @@
+#Copyright © 2024-2025, UChicago Argonne, LLC
+
 from scipy.integrate import solve_ivp
 
 def ode_solver(fdot, initial, tmax, t_eval):

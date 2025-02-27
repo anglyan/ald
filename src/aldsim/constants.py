@@ -1,3 +1,5 @@
+#Copyright © 2024-2025, UChicago Argonne, LLC
+
 """Define fundamental constants"""
 
 kb = 1.38e-23

@@ -1,4 +1,4 @@
-#Copyright © 2024, UChicago Argonne, LLC
+#Copyright © 2024-2025, UChicago Argonne, LLC
 
 import math as m
 
@@ -93,6 +93,4 @@ def calc_sitearea_fromrbs(atoms_area, atoms_permol=1.0):
     """
 
     return atoms_permol/atoms_area
-
-
 
