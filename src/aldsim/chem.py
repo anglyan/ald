@@ -57,7 +57,7 @@ class SurfaceKinetics:
     @site_area.setter
     def site_area(self, value):
         self._s0 = value
-        self._nsites = self.f/self._s0
+        self._nsites = self._f/self._s0
     
     @property
     def nsites(self):

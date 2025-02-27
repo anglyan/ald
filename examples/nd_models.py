@@ -1,4 +1,4 @@
-from aldsim.core.ideal.batch import PlugFlowMixed
+from aldsim.core.ideal.particle.batch import PlugFlowMixed
 
 model = PlugFlowMixed(1)
 print(model.Da)
